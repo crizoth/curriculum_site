@@ -26,33 +26,36 @@ class SkillsPage extends StatelessWidget {
     //       return skillListTile(skill: skills[index]);
     //     });
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            skillListTile(skill: skills[0], icon: 'assets/icons/flutter.svg'),
-            skillListTile(skill: skills[1]),
-          ],
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            skillListTile(skill: skills[2], icon: 'assets/icons/mobile.svg'),
-            skillListTile(skill: skills[3], icon: 'assets/icons/web.svg'),
-          ],
-        ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            skillListTile(skill: skills[4], icon: 'assets/icons/rest.svg'),
-            SizedBox(
-              height: 220,
-            )
-          ],
-        ),
-      ],
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: 600),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              skillListTile(skill: skills[0], icon: 'assets/icons/flutter.svg'),
+              skillListTile(skill: skills[1]),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              skillListTile(skill: skills[2], icon: 'assets/icons/mobile.svg'),
+              skillListTile(skill: skills[3], icon: 'assets/icons/web.svg'),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              skillListTile(skill: skills[4], icon: 'assets/icons/rest.svg'),
+              SizedBox(
+                height: 220,
+              )
+            ],
+          ),
+        ],
+      ),
     );
   }
 

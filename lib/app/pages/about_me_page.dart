@@ -7,40 +7,63 @@ class AboutMePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OverflowBox(
-      minWidth: 1100,
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 60, horizontal: 60),
-        decoration: BoxDecoration(
-            //  color: Color.fromARGB(255, 35, 45, 49),
-            gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-              Colors.black,
-              AppColors.darkGrey,
-              Colors.black,
-            ])),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(flex: 1, child: aboutMeAsPerson()),
-            SizedBox(
-              width: 40,
-            ),
-            Expanded(
-              flex: 1,
-              child: aboutMeAsProfessional(),
-            )
-          ],
+    return LayoutBuilder(builder: (context, constraints) {
+      bool mediumLayout = constraints.maxWidth < 1100;
+      bool smallLayout = constraints.maxWidth < 860;
+      return ConstrainedBox(
+        constraints: BoxConstraints(
+            maxHeight: mediumLayout && !smallLayout
+                ? 700
+                : smallLayout
+                    ? 800
+                    : 600),
+        child: Container(
+            padding: EdgeInsets.symmetric(vertical: 60, horizontal: 60),
+            decoration: BoxDecoration(
+                //  color: Color.fromARGB(255, 35, 45, 49),
+                gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                  Colors.black,
+                  AppColors.darkGrey,
+                  Colors.black,
+                ])),
+            child: mediumLayout || smallLayout
+                ? getColumnLayout()
+                : getRowLayout()),
+      );
+    });
+  }
+
+  getRowLayout() {
+    return Row(
+      children: [
+        Flexible(flex: 1, child: aboutMeAsPerson(false)),
+        SizedBox(
+          width: 40,
         ),
-      ),
+        Flexible(
+          flex: 1,
+          child: aboutMeAsProfessional(),
+        )
+      ],
     );
   }
 
-  aboutMeAsPerson() {
+  getColumnLayout() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        aboutMeAsPerson(true),
+        aboutMeAsProfessional(),
+      ],
+    );
+  }
+
+  aboutMeAsPerson(bool isColumn) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 60, horizontal: 20),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.spotLight),
         borderRadius: BorderRadius.circular(16),
@@ -52,20 +75,17 @@ class AboutMePage extends StatelessWidget {
           Text(
             'Sobre mim',
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 20,
             ),
           ),
-          SizedBox(
-            height: 60,
-          ),
           Container(
-            child: personCardInfo(),
+            child: personCardInfo(!isColumn),
           ),
           Row(
             children: [
               Flexible(
                 child: Text(
-                  'Olá! Sou um apaixonado desenvolvedor autodidata com mais de 2 anos de experiência na criação de aplicativos e interfaces incríveis para a web, Android e iOS. Minha jornada no mundo da programação começou com um profundo interesse em transformar ideias em realidade, e esse interesse me impulsionou a me tornar um desenvolvedor usando a tecnologia Flutter.',
+                  'Sou um apaixonado desenvolvedor autodidata com mais de 2 anos de experiência na criação de aplicativos e interfaces incríveis para a web, Android e iOS. Minha jornada no mundo da programação começou com um profundo interesse em transformar ideias em realidade, e esse interesse me impulsionou a me tornar um desenvolvedor usando a tecnologia Flutter.',
                   textAlign: TextAlign.justify,
                   style: TextStyle(),
                 ),
@@ -79,7 +99,7 @@ class AboutMePage extends StatelessWidget {
 
   aboutMeAsProfessional() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 60, horizontal: 20),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.spotLight),
         borderRadius: BorderRadius.circular(16),
@@ -94,16 +114,18 @@ class AboutMePage extends StatelessWidget {
               fontSize: 24,
             ),
           ),
-          SizedBox(
-            height: 30,
-          ),
           experienceCard('2023', 'Conlife:',
               'Desenvolvedor pleno Flutter, responsável pelo aplicativo e plataforma Web de um internetBanking entre outras funcionalidades; publicado para android e IOS.'),
+          SizedBox(
+            height: 20,
+          ),
           experienceCard(
             '2022\n2023',
             'Tinnova:',
             'Desenvolvedor pleno Flutter, integrante de uma equipe de desenvolvedores de uma software house, que cuidava de diveros apps de clientes.',
-            inverted: true,
+          ),
+          SizedBox(
+            height: 20,
           ),
           experienceCard(
             '2021\n2023',
@@ -115,25 +137,27 @@ class AboutMePage extends StatelessWidget {
     );
   }
 
-  personCardInfo() {
+  personCardInfo(bool showPerson) {
+    print(showPerson);
     return Container(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 6),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.white),
-              borderRadius: BorderRadius.circular(16),
+          if (showPerson)
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(
+                Icons.person,
+                size: 80,
+              ),
             ),
-            child: Icon(
-              Icons.person,
-              size: 80,
+          if (showPerson)
+            SizedBox(
+              width: 30,
             ),
-          ),
-          SizedBox(
-            width: 30,
-          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -143,19 +167,6 @@ class AboutMePage extends StatelessWidget {
               Text('Moradia: São Paulo - Vale do Paraiba'),
               Text('Experiência: 2 anos+'),
               Text('Senioridade: Pleno'),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 300),
-                child: Row(
-                  children: [
-                    Flexible(
-                        child: Text(
-                            'Disponível para trabalho presencial ou remoto')),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 40,
-              ),
             ],
           ),
         ],
@@ -163,71 +174,48 @@ class AboutMePage extends StatelessWidget {
     );
   }
 
-  experienceCard(String label, String title, String content,
-      {bool inverted = false}) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: 600),
-      child: Row(
-        mainAxisAlignment: // MainAxisAlignment.center,
-            inverted ? MainAxisAlignment.end : MainAxisAlignment.start,
-        children: [
-          if (!inverted)
-            Container(
-              height: 60,
-              width: 60,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: AppColors.secondarySpotLight),
-              child: Center(child: Text(label)),
-            ),
-          SizedBox(
-            width: 20,
-          ),
-          ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 300),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: // MainAxisAlignment.center,
-                      inverted
-                          ? MainAxisAlignment.end
-                          : MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+  experienceCard(
+    String label,
+    String title,
+    String content,
+  ) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          height: 60,
+          width: 60,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: AppColors.secondarySpotLight),
+          child: Center(child: Text(label)),
+        ),
+        SizedBox(
+          width: 20,
+        ),
+        Expanded(
+          flex: 1,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+              ),
+              Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      // textAlign: TextAlign.left,
+                      content,
                     ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Flexible(
-                      child: Text(
-                        textAlign: inverted ? TextAlign.right : TextAlign.left,
-                        content,
-                        style: TextStyle(),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          SizedBox(
-            width: 20,
-          ),
-          if (inverted)
-            Container(
-              height: 60,
-              width: 60,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: AppColors.secondarySpotLight),
-              child: Center(child: Text(label)),
-            ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

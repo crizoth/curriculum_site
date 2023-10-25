@@ -6,9 +6,7 @@ import 'package:curriculum_site/extras/AppColors.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-
-  final String title;
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -20,58 +18,78 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return LayoutBuilder(builder: (context, constraints) {
+      bool isMobile = constraints.maxWidth < 660;
+      return Scaffold(
         backgroundColor: Colors.black,
-        body: OverflowBox(
-          minWidth: 800,
-          child: _buildBody(),
-        ));
+        body:
+            // OverflowBox(
+            //   minWidth: 800,
+            // child:
+            isMobile ? _buildMobileBOdy() : _buildWebBody(),
+        // )
+      );
+    });
   }
 
-  _buildBody() {
+  _buildMobileBOdy() {
+    return ListView(
+      children: [
+        PresentationPage(),
+        AboutMePage(),
+        SkillsPage(),
+        ContactPage(),
+      ],
+    );
+  }
+
+  _buildWebBody() {
     return Column(
       children: [
-        Expanded(
-            flex: 1,
-            child: Container(
-              color: AppColors.darkGrey,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  menuButton(label: 'Inicio', index: 0),
-                  SizedBox(
-                    width: 40,
-                  ),
-                  menuButton(label: 'Sobre mim', index: 1),
-                  SizedBox(
-                    width: 40,
-                  ),
-                  menuButton(label: 'Conhecimentos', index: 2),
-                  SizedBox(
-                    width: 40,
-                  ),
-                  menuButton(label: 'Contato', index: 3),
-                ],
-              ),
-            )),
-        Expanded(
-          flex: 16,
-          child: PageView(
-            onPageChanged: (index) {
-              currentPage = index;
-              setState(() {});
-            },
-            controller: pageController,
-            pageSnapping: false,
-            scrollDirection: Axis.vertical,
-            children: [
-              PresentationPage(),
-              AboutMePage(),
-              SkillsPage(),
-              ContactPage(),
-            ],
+        Expanded(flex: 1, child: webMenu()),
+        Expanded(flex: 16, child: webPageView()),
+      ],
+    );
+  }
+
+  webMenu() {
+    return Container(
+      color: AppColors.darkGrey,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          menuButton(label: 'Inicio', index: 0),
+          SizedBox(
+            width: 40,
           ),
-        ),
+          menuButton(label: 'Sobre mim', index: 1),
+          SizedBox(
+            width: 40,
+          ),
+          menuButton(label: 'Conhecimentos', index: 2),
+          SizedBox(
+            width: 40,
+          ),
+          menuButton(label: 'Contato', index: 3),
+        ],
+      ),
+    );
+  }
+
+  webPageView() {
+    return ListView(
+      // onPageChanged: (index) {
+      //   currentPage = index;
+      //   setState(() {});
+      // },
+      controller: pageController,
+      // pageSnapping: false,
+      scrollDirection: Axis.vertical,
+      children: [
+        PresentationPage(),
+        AboutMePage(),
+        SkillsPage(),
+        ContactPage(),
       ],
     );
   }
